@@ -28,13 +28,14 @@ class UsersController extends Controller
     		'email' => 'required|email|unique:users|max:255',
     		'password' =>'required|confirmed|min:6'
     	]);
-
-    	$user = User::create([
+        echo bcrypt($request->password);
+        exit;
+        $user = User::create([
     		'name'=>$request->name,
     		'email'=>$request->email,
     		'password'=>bcrypt($request->password),
     	]);
-    	$this->sendEmailConfirmationTo($user);
+        $this->sendEmailConfirmationTo($user);
         session()->flash('success', '验证邮件已发送到你的注册邮箱上，请注意查收。');
     	return redirect('/');
     }
@@ -103,15 +104,4 @@ class UsersController extends Controller
         session()->flash('success', '恭喜你，激活成功！');
         return redirect()->route('users.show', [$user]);
     }
-
-    public function followers(){
-        return $this->belongsToMany(User::class,'followers','user_id','follower_id');
-    }
-
-    public function followings()
-    {
-        return $this->belongsToMany(User::Class,'followers','follower_id','user_id');
-    }
-
-    
 }
